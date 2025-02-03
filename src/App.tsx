@@ -16,7 +16,7 @@ function App() {
     <Router>
       {/* Navbar is displayed on all routes except SignIn and SignUp */}
       <Navbar />
-
+      {/* Check2 */}
       <Routes>
         {/* Define Routes */}
         <Route path="/login" element={<SignIn />} />
