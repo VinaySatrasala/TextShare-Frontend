@@ -7,12 +7,13 @@ import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/DashBoard";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Room } from "./pages/Room";
+import { Toaster } from "react-hot-toast";
 
 
 function App() {
   return (
     <AuthProvider>
-
+      <Toaster position="bottom-right" reverseOrder={false} />
     <Router>
       {/* Navbar is displayed on all routes except SignIn and SignUp */}
       <Navbar />

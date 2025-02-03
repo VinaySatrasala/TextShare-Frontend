@@ -2,21 +2,12 @@ import { Routes, Route, Link } from "react-router-dom";
 import { FaHome, FaPlus, FaDoorOpen, FaSignOutAlt } from "react-icons/fa";
 import { CreatedRooms } from "../components/CreatedRooms";
 import { CreateRooms } from "../components/CreateRoom";
-
-const Home = () => (
-  <div>
-    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Home</h2>
-    <p className="text-gray-600 dark:text-gray-300 mt-4">This is the Home page content.</p>
-  </div>
-);
+import Home from "../components/Home";
+import JoinedRooms from "../components/JoinedRooms";
 
 
-const ViewJoinedRooms = () => (
-  <div>
-    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">View Joined Rooms</h2>
-    <p className="text-gray-600 dark:text-gray-300 mt-4">Here are the rooms you’ve joined.</p>
-  </div>
-);
+
+
 
 const Settings = () => (
   <div>
@@ -62,11 +53,11 @@ const Dashboard = () => {
       </aside>
 
       {/* Main Content Area */}
-      <main className="ml-64 w-full pt-16 p-8">
+      <main className="ml-64 w-full p-8">
         <Routes>
           <Route path="home" element={<Home />} />
           <Route path="created-rooms" element={<CreatedRooms />} />
-          <Route path="joined-rooms" element={<ViewJoinedRooms />} />
+          <Route path="joined-rooms" element={<JoinedRooms />} />
           <Route path="settings" element={<Settings />} />
           <Route path="create-room" element={<CreateRooms />} />
         </Routes>
