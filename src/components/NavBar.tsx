@@ -22,7 +22,7 @@ const Navbar: React.FC = () => {
         const res = await axios.get(`${backendUrl}/auth`, { withCredentials: true });
         if (res.status === 200) {
           setIsLoggedIn(true);
-          setUserName(res.data.userName || "Hello");
+          setUserName(res.data.name);
         } else {
           setIsLoggedIn(false);
         }
@@ -119,7 +119,7 @@ const Navbar: React.FC = () => {
         </button>
 
         {/* User Actions */}
-        {isLoggedIn ? (
+        {!isAuthPage && isLoggedIn ? (
           <div className="relative">
             {/* Dropdown Toggle */}
             <button
@@ -128,8 +128,7 @@ const Navbar: React.FC = () => {
               aria-haspopup="true"
               aria-expanded={isDropdownOpen}
             >
-              <FaUserAlt className="text-gray-600 dark:text-white" size={20} />
-              {userName}
+              <span>{userName}</span>
             </button>
 
             {/* Dropdown Menu */}

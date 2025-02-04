@@ -27,7 +27,7 @@ const SignIn = () => {
       console.log(res.data);
       if (res.status === 200) {
         setIsLoggedIn(true);
-        setUserName("Hello");
+        setUserName(res.data.name);
         navigate("/dashboard/home");
       }
     }catch(error:any){
