@@ -23,8 +23,8 @@ export const Room = () => {
       try {
         const res = await axios.get(`${backendUrl}/room/${roomId}`, { withCredentials: true });
         if (res.status === 200) {
-          setRoomDetails(res.data);
-          setCurrentUserId(res.data.currentUserId); // Assuming backend sends `currentUserId`
+          setRoomDetails(res.data.room);
+          setCurrentUserId(res.data.userId); // Assuming backend sends `currentUserId`
         }
       } catch (err) {
         setError("Failed to fetch room details. Please try again later.");
@@ -113,7 +113,12 @@ export const Room = () => {
     if (!confirm("Are you sure you want to remove this user?")) return;
     
     try {
-      const res = await axios.delete(`${backendUrl}/room/${roomId}/user/${userId}`, {
+      const res = await axios.post(`${backendUrl}/deleteUser`,
+        {
+          code : roomId,
+          id: userId,
+        },
+        {
         withCredentials: true,
       });
 
@@ -136,11 +141,10 @@ export const Room = () => {
     };
 
   return (
-    <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col items-center mt-16">
-      {/* ...existing code... */}
-
+    <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col items-center mt-16 w-full">
+      {/* {JSON.stringify(roomDetails)} */}
       {!loading && !error && (
-        <div className="flex w-full max-w-4xl">
+        <div className="flex w-full">
           {/* Chat Section */}
           <div className="w-3/4 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
