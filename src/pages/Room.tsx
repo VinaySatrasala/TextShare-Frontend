@@ -139,8 +139,7 @@ export const Room = () => {
       navigator.clipboard.writeText(text);
       toast.success("Copied to clipboard!"); // Optional toast notification
     };
-
-  return (
+      return (
     <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col items-center mt-16 w-full">
       {/* {JSON.stringify(roomDetails)} */}
       {!loading && !error && (

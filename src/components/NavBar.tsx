@@ -128,7 +128,7 @@ const Navbar: React.FC = () => {
               aria-haspopup="true"
               aria-expanded={isDropdownOpen}
             >
-              <span>{userName}</span>
+              <h1>{userName} </h1>
             </button>
 
             {/* Dropdown Menu */}
