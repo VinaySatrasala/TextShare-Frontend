@@ -53,6 +53,7 @@ export const Room = () => {
     const onMessage = (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
+        console.log("WebSocket message received:", data);
         if (data.type === "message" && typeof data.text === "string") {
           setMessages((prev) => [...prev, data.text]);
         }

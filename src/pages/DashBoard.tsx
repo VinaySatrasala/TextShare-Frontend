@@ -2,8 +2,8 @@ import { Routes, Route, Link } from "react-router-dom";
 import { FaHome, FaPlus, FaDoorOpen, FaSignOutAlt } from "react-icons/fa";
 import { CreatedRooms } from "../components/CreatedRooms";
 import { CreateRooms } from "../components/CreateRoom";
-import Home from "../components/Home";
 import JoinedRooms from "../components/JoinedRooms";
+import JoinRoom from "../components/JoinRoom";
 
 
 
@@ -55,7 +55,7 @@ const Dashboard = () => {
       {/* Main Content Area */}
       <main className="ml-64 w-full p-8">
         <Routes>
-          <Route path="home" element={<Home />} />
+          <Route path="home" element={<JoinRoom />} />
           <Route path="created-rooms" element={<CreatedRooms />} />
           <Route path="joined-rooms" element={<JoinedRooms />} />
           <Route path="settings" element={<Settings />} />
