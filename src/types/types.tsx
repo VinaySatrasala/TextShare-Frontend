@@ -13,6 +13,7 @@ export interface RoomDetails {
   roomId: string;
   name: string;
   adminId: number;
+  id : number;
   users: User[];
 }
 

@@ -4,10 +4,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Copy, Trash2 } from "lucide-react"; // Importing icons from lucide-react
 import { toast } from "react-hot-toast"; // For toast notifications
 import RoomUsers from "../components/RoomUsers";
+import { Loader } from "../components/Loader";
+import { RoomResponsePopup } from "../components/RoomResponsePopup";
+import { RoomDetails } from "../types/types";
 
 export const Room = () => {
   const { roomId } = useParams();
-  const [roomDetails, setRoomDetails] = useState<any>({});
+  const [roomDetails, setRoomDetails] = useState<RoomDetails>({
+    name: "",
+    roomId: "",
+    adminId: 0,
+    id: 0,
+    users: [],
+  });
   const [messages, setMessages] = useState<string[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -16,12 +25,12 @@ export const Room = () => {
     message: string;
     action?: () => void;
   } | null>(null); // Pop-up message state
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const wsUrl = import.meta.env.VITE_WS_URL || "ws://localhost:8080";
   const ws = useRef<WebSocket | null>(null);
   const [removeUser, setRemoveUser] = useState(false);
-  const [removeUserId, setRemoveUserId] = useState("");
+  const [removeUserId, setRemoveUserId] = useState(0);
   const [loadingRemoveUser, setLoadingRemoveUser] = useState(false);
   const [messageRemoveUser, setmessageRemoveUser] = useState("");
   const [showMessage, setShowMessage] = useState(false);
@@ -74,7 +83,7 @@ export const Room = () => {
         if (data.type === "message" && typeof data.text === "string") {
           setMessages((prev) => [...prev, data.text]);
         } else if (data.type === "error") {
-          setPopup({ message: data.message || "An error occurred." });
+          setPopup({ message: data.message || "An error occurred." ,action : () => {setPopup(null)}});
           if (data.message === "Room ID is required") {
             setPopup({
               message: "Something went wrong...",
@@ -104,6 +113,12 @@ export const Room = () => {
               navigate("/dashboard/home"); // Redirecting to home on removal
             },
           });
+        } else if (data.type === "user_joined") {
+          const joined_user = JSON.parse(data.message);
+          setRoomDetails(prevDetails => ({
+            ...prevDetails,
+            users: [...prevDetails.users, joined_user]
+          }));
         }
       } catch (err) {
         console.error("Error parsing WebSocket message:", err);
@@ -160,11 +175,11 @@ export const Room = () => {
   };
 
   // Remove user from room (only for admins)
-  const handleRemoveUser = async (userId: string) => {
+  const handleRemoveUser = async (userId: number) => {
     setRemoveUser(true);
     setRemoveUserId(userId);
   };
-  const RemoveUser = async (userId: string) => {
+  const RemoveUser = async (userId: number) => {
     try {
       setLoadingRemoveUser(true);
       const res = await axios.post(
@@ -206,6 +221,7 @@ export const Room = () => {
       console.error("Error removing user:", err);
       setmessageRemoveUser("Something went wrong while removing the user...");
     } finally {
+      setRemoveUser(false);
       setLoadingRemoveUser(false);
       setShowMessage(true); // Show the message after operation
     }
@@ -255,30 +271,11 @@ export const Room = () => {
       )}
 
       {popup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-80 text-center">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white">
-              Room Status
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
-              {popup.message}
-            </p>
-            <button
-              onClick={popup.action}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-400 transition"
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <RoomResponsePopup message={popup.message} action={popup.action} />
       )}
 
       {/* Loader */}
-      {loading && (
-        <div className="flex justify-center items-center">
-          <div className="loader border-t-4 border-blue-500 rounded-full w-8 h-8 animate-spin"></div>
-        </div>
-      )}
+      {loading && <Loader />}
 
       {/* Room Details and Chat */}
       {!loading && !error && (
@@ -342,7 +339,7 @@ export const Room = () => {
 
           {/* Users List */}
           <RoomUsers
-            roomDetails = {roomDetails}
+            roomDetails={roomDetails}
             currentUserId={currentUserId}
             handleRemoveUser={handleRemoveUser}
           />
