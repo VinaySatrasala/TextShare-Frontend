@@ -35,7 +35,7 @@ export const Room = () => {
   const [messageRemoveUser, setmessageRemoveUser] = useState("");
   const [showMessage, setShowMessage] = useState(false);
   const [adminName, setAdminName] = useState("");
-
+  const [activeUsers, setActiveUsers] = useState<number[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -83,7 +83,12 @@ export const Room = () => {
         if (data.type === "message" && typeof data.text === "string") {
           setMessages((prev) => [...prev, data.text]);
         } else if (data.type === "error") {
-          setPopup({ message: data.message || "An error occurred." ,action : () => {setPopup(null)}});
+          setPopup({
+            message: data.message || "An error occurred.",
+            action: () => {
+              setPopup(null);
+            },
+          });
           if (data.message === "Room ID is required") {
             setPopup({
               message: "Something went wrong...",
@@ -114,11 +119,10 @@ export const Room = () => {
             },
           });
         } else if (data.type === "user_joined") {
-          const joined_user = JSON.parse(data.message);
-          setRoomDetails(prevDetails => ({
-            ...prevDetails,
-            users: [...prevDetails.users, joined_user]
-          }));
+          const joined_user = JSON.parse(data.message) as { id: number };
+          setActiveUsers((p) => [...p, joined_user.id]);
+        }else if (data.type === "user_offline"){
+          setActiveUsers((prevUsers) => prevUsers.filter(id => id !== Number(data.message)));
         }
       } catch (err) {
         console.error("Error parsing WebSocket message:", err);
@@ -151,7 +155,11 @@ export const Room = () => {
     };
   }, [roomId, wsUrl, navigate]);
 
-  const handleSendMessage = () => {
+  const   handleSendMessage = () => {
+    if (newMessage.trim() === "") {
+      // Optionally, show an alert or return early to avoid submitting empty message
+      return; // Prevent empty message submission
+    }
     if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
       setError("Not connected to the server");
       return;
@@ -234,11 +242,12 @@ export const Room = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col items-center mt-16 w-full">
+        <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col items-center mt-16 w-full">
+      {/* Modal for removing user */}
       {removeUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-[500px] text-center">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg max-w-md text-center transform transition-all scale-100 hover:scale-105">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
               Are you sure you want to remove this user?
             </h3>
 
@@ -247,7 +256,7 @@ export const Room = () => {
                 <div className="loader border-t-4 border-blue-500 rounded-full w-8 h-8 animate-spin"></div>
               </div>
             ) : (
-              <div className="flex justify-end gap-4 mt-6">
+              <div className="flex justify-between gap-6 mt-6">
                 <button
                   onClick={() => setRemoveUser(false)}
                   className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
@@ -257,12 +266,12 @@ export const Room = () => {
                 <button
                   onClick={async () => {
                     setLoadingRemoveUser(true);
-                    await RemoveUser(removeUserId);
+                    await handleRemoveUser(removeUserId);
                     setLoadingRemoveUser(false);
                   }}
                   className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-400 transition"
                 >
-                  Delete
+                  Remove
                 </button>
               </div>
             )}
@@ -270,29 +279,30 @@ export const Room = () => {
         </div>
       )}
 
-      {popup && (
-        <RoomResponsePopup message={popup.message} action={popup.action} />
-      )}
+      {/* Popup for response */}
+      {popup && <RoomResponsePopup message={popup.message} action={popup.action} />}
 
       {/* Loader */}
       {loading && <Loader />}
 
       {/* Room Details and Chat */}
       {!loading && !error && (
-        <div className="flex w-full max-w-7xl">
+        <div className="flex flex-col md:flex-row w-full max-w-7xl gap-6">
           {/* Chat Section */}
-          <div className="w-3/4 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+          <div className="w-full md:w-3/4 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl flex flex-col gap-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
                 {roomDetails.name || "Loading room..."}
               </h1>
-              <hr className="my-2 border-gray-300 dark:border-gray-600" />
+              <hr className="my-3 border-gray-300 dark:border-gray-600" />
               <div className="flex justify-between text-gray-600 dark:text-gray-300">
-                <h4>Room Code: {roomId}</h4>
-                <h4>Admin: {adminName || "N/A"}</h4>
+                <h4 className="text-sm font-medium">Room Code: {roomId}</h4>
+                <h4 className="text-sm font-medium">Admin: {adminName || "N/A"}</h4>
               </div>
             </div>
-            <div className="h-96 overflow-y-auto bg-gray-100 dark:bg-gray-700 p-4 mt-4 rounded space-y-3">
+
+            {/* Messages Section */}
+            <div className="h-96 overflow-y-auto bg-gray-100 dark:bg-gray-700 p-4 mt-4 rounded-lg space-y-4">
               {messages.length === 0 ? (
                 <p className="text-gray-500 dark:text-gray-400 text-center">
                   No messages yet.
@@ -301,12 +311,12 @@ export const Room = () => {
                 messages.map((msg, index) => (
                   <div
                     key={index}
-                    className="relative p-3 rounded-lg bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 dark:from-gray-700 dark:to-gray-800 text-white w-fit shadow-lg hover:shadow-xl transition-shadow"
+                    className="relative p-4 rounded-xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 dark:from-gray-700 dark:to-gray-800 text-white w-fit shadow-xl hover:shadow-2xl transition-shadow"
                   >
                     {/* Copy Icon */}
                     <button
                       onClick={() => copyToClipboard(msg)}
-                      className="absolute top-1 right-1 text-white opacity-70 hover:opacity-100 transition-opacity"
+                      className="absolute top-2 right-2 text-white opacity-70 hover:opacity-100 transition-opacity"
                       aria-label="Copy message"
                     >
                       <Copy size={16} />
@@ -316,7 +326,9 @@ export const Room = () => {
                 ))
               )}
             </div>
-            <div className="mt-4 flex gap-2">
+
+            {/* Send Message Section */}
+            <div className="mt-6 flex gap-3">
               <input
                 type="text"
                 value={newMessage}
@@ -326,11 +338,11 @@ export const Room = () => {
                 }}
                 onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                 placeholder="Type your message..."
-                className="flex-1 p-2 border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg"
+                className="flex-1 p-3 border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
               />
               <button
                 onClick={handleSendMessage}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-400 transition"
+                className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 dark:hover:bg-blue-400 transition"
               >
                 Send
               </button>
@@ -342,6 +354,7 @@ export const Room = () => {
             roomDetails={roomDetails}
             currentUserId={currentUserId}
             handleRemoveUser={handleRemoveUser}
+            ActiveUsersId={activeUsers}
           />
         </div>
       )}
