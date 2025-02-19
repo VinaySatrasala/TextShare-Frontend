@@ -17,3 +17,7 @@ export interface RoomDetails {
   users: User[];
 }
 
+export interface WebSocketType {
+  type : string;
+  message : string;
+}

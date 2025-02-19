@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast"; // For toast notifications
 import RoomUsers from "../components/RoomUsers";
 import { Loader } from "../components/Loader";
 import { RoomResponsePopup } from "../components/RoomResponsePopup";
-import { RoomDetails } from "../types/types";
+import { RoomDetails, WebSocketType } from "../types/types";
 
 export const Room = () => {
   const { roomId } = useParams();
@@ -27,7 +27,7 @@ export const Room = () => {
   } | null>(null); // Pop-up message state
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  const wsUrl = import.meta.env.VITE_WS_URL || "wss://orange-system-499wprxqjjvcqprw-8080.app.github.dev";
+  const wsUrl = import.meta.env.VITE_WS_URL || "ws://localhost:8080";
   const ws = useRef<WebSocket | null>(null);
   const [removeUser, setRemoveUser] = useState(false);
   const [removeUserId, setRemoveUserId] = useState(0);
@@ -79,8 +79,10 @@ export const Room = () => {
       try {
         const data = JSON.parse(event.data);
         console.log("WebSocket message received:", data);
-
-        if (data.type === "message" && typeof data.text === "string") {
+        if(data.type == "success"){
+          setActiveUsers(JSON.parse(data.message).activeUsers);
+        }
+        else if (data.type === "message" && typeof data.text === "string") {
           setMessages((prev) => [...prev, data.text]);
         } else if (data.type === "error") {
           setPopup({
@@ -266,7 +268,7 @@ export const Room = () => {
                 <button
                   onClick={async () => {
                     setLoadingRemoveUser(true);
-                    await handleRemoveUser(removeUserId);
+                    await RemoveUser(removeUserId);
                     setLoadingRemoveUser(false);
                   }}
                   className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-400 transition"
