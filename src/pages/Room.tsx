@@ -27,7 +27,7 @@ export const Room = () => {
   } | null>(null); // Pop-up message state
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  const wsUrl = import.meta.env.VITE_WS_URL || "ws://localhost:8080";
+  const wsUrl = import.meta.env.VITE_WS_URL || "wss://orange-system-499wprxqjjvcqprw-8080.app.github.dev";
   const ws = useRef<WebSocket | null>(null);
   const [removeUser, setRemoveUser] = useState(false);
   const [removeUserId, setRemoveUserId] = useState(0);
