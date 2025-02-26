@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import { FaMoon, FaSun, FaUserAlt } from "react-icons/fa";
+import { FaMoon, FaSun} from "react-icons/fa";
 
 const Navbar: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {

@@ -1,4 +1,3 @@
-import React from "react";
 import { FaUsers, FaComments, FaLock } from "react-icons/fa"; // Icons
 
 const LandingPage = () => {

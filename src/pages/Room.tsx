@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Copy, Trash2 } from "lucide-react"; // Importing icons from lucide-react
+import { Copy } from "lucide-react"; // Importing icons from lucide-react
 import { toast } from "react-hot-toast"; // For toast notifications
 import RoomUsers from "../components/RoomUsers";
 import { Loader } from "../components/Loader";
 import { RoomResponsePopup } from "../components/RoomResponsePopup";
-import { RoomDetails, WebSocketType } from "../types/types";
+import { RoomDetails } from "../types/types";
 
 export const Room = () => {
   const { roomId } = useParams();
@@ -32,8 +32,8 @@ export const Room = () => {
   const [removeUser, setRemoveUser] = useState(false);
   const [removeUserId, setRemoveUserId] = useState(0);
   const [loadingRemoveUser, setLoadingRemoveUser] = useState(false);
-  const [messageRemoveUser, setmessageRemoveUser] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
+  const [_messageRemoveUser, setmessageRemoveUser] = useState("");
+  const [_showMessage, setShowMessage] = useState(false);
   const [adminName, setAdminName] = useState("");
   const [activeUsers, setActiveUsers] = useState<number[]>([]);
   const navigate = useNavigate();
