@@ -112,7 +112,7 @@ export const CreatedRooms = () => {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-80">
             <h3 className="text-xl font-bold text-gray-800 dark:text-white">
               Are you sure?
-            </h3>ds
+            </h3>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
               This action cannot be undone.
             </p>

@@ -56,7 +56,7 @@ const RoomUsers: React.FC<RoomUsersProps> = ({
                 >
                   {user.name}
                 </span>
-              </div>
+              </div>  
 
               {/* Right Section: Remove Button (Only for Admin) */}
               {roomDetails.adminId === currentUserId && user.id !== currentUserId && (

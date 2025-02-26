@@ -23,7 +23,7 @@ const SignUp = () => {
       console.log(res.data);
       if (res.status === 200) {
         // Redirect to the dashboard if signup is successful
-        navigate("/dashboard/home");
+        navigate("/login");
       }
     } catch (error:any) {
       console.error(
@@ -83,7 +83,7 @@ const SignUp = () => {
             Already have an account?{" "}
             <button
               className="text-green-600 hover:text-green-700 hover:underline"
-              onClick={() => console.log("Switch to Sign In")}
+              onClick={() => navigate("/login")}
             >
               Sign In
             </button>
