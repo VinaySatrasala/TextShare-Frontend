@@ -124,7 +124,7 @@ const Navbar: React.FC = () => {
             {/* Dropdown Toggle */}
             <button
               onClick={() => setIsDropdownOpen((prev) => !prev)}
-              className="flex items-center space-x-2 bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded-full focus:outline-none"
+              className="flex items-center space-x-2 bg-gray-200 dark:bg-gray-700 dark:text-white text-black px-4 py-2 rounded-full focus:outline-none"
               aria-haspopup="true"
               aria-expanded={isDropdownOpen}
             >
@@ -134,7 +134,7 @@ const Navbar: React.FC = () => {
             {/* Dropdown Menu */}
             {isDropdownOpen && (
               <div
-                className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-md rounded-lg"
+                className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 dark:text-white text-black shadow-md rounded-lg"
                 onMouseLeave={() => setIsDropdownOpen(false)}
               >
                 <a
