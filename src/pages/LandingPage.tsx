@@ -1,6 +1,8 @@
 import { FaUsers, FaComments, FaLock } from "react-icons/fa"; // Icons
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
+  const navigate = useNavigate();
   return (
     <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 dark:from-gray-900 dark:to-black min-h-screen">
 
@@ -12,7 +14,12 @@ const LandingPage = () => {
         <p className="text-lg mb-6 animate__animated animate__fadeIn animate__delay-2s max-w-3xl">
           Share your thoughts and ideas in dedicated rooms with TextShare. A seamless platform to create, share, and connect with others in a secure and private environment.
         </p>
-        <button className="bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-full text-xl transition-all transform hover:scale-105 animate__animated animate__fadeIn animate__delay-3s">
+        <button 
+        onClick={() => {
+          navigate("/login");
+        }
+      }
+        className="bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-full text-xl transition-all transform hover:scale-105 animate__animated animate__fadeIn animate__delay-3s">
           Join a Room
         </button>
       </section>

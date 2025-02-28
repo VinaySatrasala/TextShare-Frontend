@@ -10,8 +10,7 @@ const Navbar: React.FC = () => {
   });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSessionChecked, setIsSessionChecked] = useState(false); // New state to track session check completion
-
-  const { isLoggedIn, setIsLoggedIn, userName, setUserName } = useAuth();
+  const { isLoggedIn, setIsLoggedIn, userName, setUserName,loading,setLoading } = useAuth();
   const location = useLocation();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -31,6 +30,8 @@ const Navbar: React.FC = () => {
       } finally {
         setIsSessionChecked(true); // Mark session check as complete
       }
+
+      setLoading(false);
     };
     checkSession();
   }, [setIsLoggedIn, setUserName, backendUrl]);

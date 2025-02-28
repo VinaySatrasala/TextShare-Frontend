@@ -37,6 +37,13 @@ export const Room = () => {
   const [adminName, setAdminName] = useState("");
   const [activeUsers, setActiveUsers] = useState<number[]>([]);
   const navigate = useNavigate();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    console.log("Messages changed");
+  }, [messages]);
 
   useEffect(() => {
     const fetchRoomDetails = async () => {
@@ -327,6 +334,7 @@ export const Room = () => {
                   </div>
                 ))
               )}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Send Message Section */}

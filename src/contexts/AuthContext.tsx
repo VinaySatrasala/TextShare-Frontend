@@ -5,6 +5,8 @@ interface AuthContextType {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   userName: string | null;
   setUserName: React.Dispatch<React.SetStateAction<string | null>>;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -12,9 +14,9 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState<string | null>("");
-
+  const [loading, setLoading] = useState(true);
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, userName, setUserName }}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, userName, setUserName, loading, setLoading }}>
       {children}
     </AuthContext.Provider>
   );

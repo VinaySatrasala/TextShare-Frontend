@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { Loader } from "./Loader";
 
 interface Room {
   id: number;
@@ -42,7 +43,7 @@ const JoinedRooms = () => {
       </h1>
 
       {loading && (
-        <p className="text-gray-600 dark:text-gray-300">Loading...</p>
+        <Loader/>
       )}
       {error && <p className="text-red-500">{error}</p>}
 
