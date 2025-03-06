@@ -5,11 +5,12 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/DashBoard";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
+// import { AuthProvider, useAuth } from "./contexts/AuthContext"
 import { Room } from "./pages/Room";
 import { Toaster } from "react-hot-toast";
 import { Loader } from "./components/Loader";
 import { useState } from "react";
+import { useAuth } from "./contexts/AuthContext";
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
   const [isDarkMode] = useState(() => localStorage.getItem("theme") === "dark");
@@ -44,7 +45,7 @@ function App() {
   const { isLoggedIn } = useAuth();
 
   return (
-    <AuthProvider>
+    <>
       <Toaster position="bottom-right" reverseOrder={false} />
       <Router>
         <Navbar />
@@ -76,7 +77,7 @@ function App() {
           <Route path="*" element={<Navigate to={isLoggedIn ? "/dashboard/home" : "/login"} replace />} />
         </Routes>
       </Router>
-    </AuthProvider>
+    </>
   );
 }
 
